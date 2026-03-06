@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Circle Group — Valley Creek</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0c0c0e;
+      --surface:   #141416;
+      --card:      #1a1a1d;
+      --border:    #2a2a2e;
+      --accent:    #7ac943;
+      --accent2:   #a8d96b;
+      --gold:      #5fa832;
+      --text:      #e8e4dc;
+      --muted:     #8a8580;
+      --radius:    12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: .5;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 80px 24px 60px;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: -40px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse at center, rgba(122,201,67,.2) 0%, rgba(95,168,50,.07) 50%, transparent 75%);
+      pointer-events: none;
+    }
+
+    .flame-icon {
+      display: inline-block;
+      font-size: 3rem;
+      animation: flicker 2.6s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 18px rgba(122,201,67,.7));
+    }
+
+    @keyframes flicker {
+      0%   { transform: scaleY(1)   rotate(-1deg); filter: drop-shadow(0 0 12px rgba(122,201,67,.6)); }
+      40%  { transform: scaleY(1.05) rotate(1deg);  filter: drop-shadow(0 0 22px rgba(168,217,107,.9)); }
+      100% { transform: scaleY(.97) rotate(0deg);  filter: drop-shadow(0 0 16px rgba(122,201,67,.7)); }
+    }
+
+    .hero-eyebrow {
+      margin-top: 18px;
+      font-size: .75rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-top: 10px;
+      background: linear-gradient(135deg, #e8f5d8 30%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: .95rem;
+      max-width: 540px;
+      margin-inline: auto;
+    }
+
+    .week-badge {
+      display: inline-block;
+      margin-top: 20px;
+      background: rgba(122,201,67,.12);
+      border: 1px solid rgba(122,201,67,.3);
+      color: var(--accent2);
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      padding: 6px 18px;
+      border-radius: 100px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      display: flex; align-items: center; gap: 16px;
+      max-width: 760px; margin: 0 auto 0;
+      padding: 0 24px;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(to right, transparent, var(--border));
+    }
+    .divider::after { background: linear-gradient(to left, transparent, var(--border)); }
+    .divider span { color: var(--accent); font-size: 1rem; }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+      position: relative; z-index: 1;
+    }
+
+    section { margin-top: 48px; }
+
+    .section-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 20px;
+    }
+    .section-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(122,201,67,.3);
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .section-desc {
+      font-size: .88rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── GUIDE CARD ── */
+    .guide-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .guide-card-header {
+      background: linear-gradient(135deg, #111a0e 0%, #0f1710 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+
+    .guide-card-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--accent2);
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--accent), #4e9020);
+      color: #0c0c0e;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 4px 14px rgba(122,201,67,.3);
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(122,201,67,.45); }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      box-shadow: none;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); box-shadow: none; }
+
+    /* ── GUIDE CARD ── */
+    .guide-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .guide-note {
+      margin-top: 7px;
+      font-size: .72rem;
+      color: var(--muted);
+      font-style: italic;
+      text-align: right;
+    }
+    .guide-note strong { color: var(--accent2); font-style: normal; }
+
+    /* ── PRAYER REQUESTS ── */
+    .prayer-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 24px;
+    }
+
+    .prayer-intro {
+      font-size: .95rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    .yes-no-row {
+      display: flex; gap: 12px; margin-bottom: 18px;
+    }
+
+    .yn-btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      text-align: center;
+    }
+    .yn-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .yn-btn.active-yes { border-color: var(--accent); background: rgba(232,119,58,.12); color: var(--accent2); }
+    .yn-btn.active-no  { border-color: var(--muted);  background: rgba(138,133,128,.1);  color: var(--text); }
+
+    .prayer-input-area { display: none; }
+    .prayer-input-area.visible { display: block; animation: fadeIn .3s ease; }
+
+    label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .88rem;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    input[type="text"]::placeholder { color: var(--muted); }
+    input[type="text"]:focus { border-color: var(--accent); }
+
+    /* ── ATTENDANCE ── */
+    .attend-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 24px;
+    }
+
+    .attend-meta {
+      display: flex; gap: 20px; flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .attend-detail {
+      display: flex; align-items: center; gap: 8px;
+      font-size: .85rem; color: var(--muted);
+    }
+    .attend-detail span { font-size: 1rem; }
+
+    /* ── GROUP CONTACTS ── */
+    .contacts-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .simple-member-list { display: flex; flex-direction: column; }
+
+    .simple-member-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .simple-member-row:last-child { border-bottom: none; }
+
+    .contact-avatar {
+      width: 26px; height: 26px; flex-shrink: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
+      color: #0c0c0e;
+      font-size: .55rem;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      letter-spacing: .03em;
+    }
+
+    .contact-info { flex: 1; }
+    .contact-name { font-weight: 600; font-size: .78rem; }
+    .contact-number { font-size: .7rem; color: var(--muted); margin-top: 1px; }
+
+    /* ── GROUP LEADER ── */
+    .leader-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .leader-current {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #111a0e 0%, #0f1710 100%);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .leader-avatar {
+      width: 36px; height: 36px; flex-shrink: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
+      color: #0c0c0e;
+      font-size: .62rem;
+      font-weight: 800;
+      font-family: 'IBM Plex Mono', monospace;
+      display: flex; align-items: center; justify-content: center;
+      letter-spacing: .04em;
+      box-shadow: 0 0 0 3px rgba(122,201,67,.3), 0 4px 16px rgba(122,201,67,.25);
+    }
+
+    .leader-info { flex: 1; }
+    .leader-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .58rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+    .leader-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .leader-week {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .62rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .leader-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .6rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: rgba(122,201,67,.12);
+      border: 1px solid rgba(122,201,67,.3);
+      color: var(--accent2);
+    }
+    .leader-badge.overridden {
+      background: rgba(201,148,59,.12);
+      border-color: rgba(201,148,59,.3);
+      color: #f0c060;
+    }
+
+    .leader-change {
+      padding: 14px 18px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .leader-change-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .62rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .leader-options {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+
+    .leader-opt {
+      flex: 1; min-width: 100px;
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.03);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .7rem;
+      font-weight: 500;
+      padding: 9px 10px;
+      cursor: pointer;
+      transition: all .2s;
+      text-align: left;
+    }
+    .leader-opt:hover { border-color: var(--accent); background: rgba(122,201,67,.06); }
+    .leader-opt.active {
+      border-color: var(--accent);
+      background: rgba(122,201,67,.1);
+      color: var(--accent2);
+      font-weight: 600;
+    }
+
+    .lo-avatar {
+      width: 24px; height: 24px; flex-shrink: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
+      color: #0c0c0e;
+      font-size: .55rem;
+      font-weight: 800;
+      font-family: 'IBM Plex Mono', monospace;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .simple-member-list { display: flex; flex-direction: column; }
+
+    .simple-member-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .simple-member-row:last-child { border-bottom: none; }
+
+    /* ── SUBMIT AREA ── */
+    .submit-section {
+      text-align: center;
+      margin-top: 48px;
+      padding: 36px 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      position: relative;
+      overflow: hidden;
+    }
+    .submit-glow {
+      position: absolute; bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 300px; height: 100px;
+      background: radial-gradient(ellipse, rgba(122,201,67,.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .submit-section h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+    .submit-section p {
+      color: var(--muted);
+      font-size: .88rem;
+      margin-bottom: 20px;
+    }
+    .btn-large {
+      font-size: .95rem;
+      padding: 14px 36px;
+    }
+
+    /* ── SUCCESS TOAST ── */
+    .toast {
+      position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1e2a1a;
+      border: 1px solid #3a6b2e;
+      color: #7ec86a;
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-size: .88rem;
+      font-weight: 600;
+      transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+      z-index: 999;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── PRAYER LIST ── */
+    .prayer-list { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+    .prayer-entry {
+      background: rgba(122,201,67,.06);
+      border: 1px solid rgba(122,201,67,.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: .9rem;
+    }
+    .prayer-entry .pe-name { font-weight: 600; color: var(--accent2); font-size: .8rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .8rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .guide-embed { height: 380px; }
+      .guide-card-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="flame-icon">🔥</div>
+  <p class="hero-eyebrow">Valley Creek Church</p>
+  <h1>Circle Group</h1>
+  <p class="hero-sub">
+    A place to dig deeper into Sunday's message together — wrestling with Scripture, sharing life, and holding each other accountable.
+  </p>
+  <span class="week-badge" id="weekBadge">Loading week…</span>
+</div>
+
+<div class="divider"><span>✦</span></div>
+
+<main>
+
+  <!-- ── CIRCLE GUIDE ── -->
+  <section id="guide-section">
+    <div class="section-header">
+      <div class="section-icon">📖</div>
+      <div>
+        <div class="section-title">This Week's Circle Guide</div>
+        <div class="section-desc">Download or view the PDF guide from Valley Creek</div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-card-header">
+        <h3 id="guideTitle">Loading current guide…</h3>
+        <div>
+          <a id="downloadBtn" href="#" target="_blank" class="btn">⬇ View Guide on Site</a>
+          <p class="guide-note">📌 Note: hit the <strong>Back</strong> button to return to this site</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── ATTENDANCE ── -->
+  <section id="attend-section">
+    <div class="section-header">
+      <div class="section-icon">📅</div>
+      <div>
+        <div class="section-title">Friday Morning Attendance</div>
+        <div class="section-desc">Are you planning to join us this Friday?</div>
+      </div>
+    </div>
+
+    <div class="attend-card">
+      <div class="attend-meta">
+        <div class="attend-detail"><span>📍</span> Circle Group Meeting</div>
+        <div class="attend-detail"><span>🕕</span> Friday at 6:30 AM</div>
+      </div>
+
+      <label>Your name</label>
+      <input type="text" id="attendName" placeholder="First name" style="margin-bottom:16px;" />
+
+      <label>Will you be attending this Friday at 6:30 AM?</label>
+      <div class="yes-no-row">
+        <button class="yn-btn" id="attendYes" onclick="toggleAttend('yes')">✅ Yes, I'll be there</button>
+        <button class="yn-btn" id="attendNo"  onclick="toggleAttend('no')">🙏 Can't make it</button>
+      </div>
+
+      <!-- Running RSVP list -->
+      <div id="rsvpList" style="margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+  </section>
+
+  <!-- ── PRAYER REQUESTS ── -->
+  <section id="prayer-section">
+    <div class="section-header">
+      <div class="section-icon">🙏</div>
+      <div>
+        <div class="section-title">Prayer Requests</div>
+        <div class="section-desc">Do you have something you'd like the group to pray for?</div>
+      </div>
+    </div>
+
+    <div class="prayer-card">
+      <p class="prayer-intro">"Bear one another's burdens, and so fulfill the law of Christ." — Galatians 6:2</p>
+
+      <label>Your name</label>
+      <input type="text" id="prayerName" placeholder="First name or anonymous" style="margin-bottom:16px;" />
+
+      <label>Do you have a prayer request?</label>
+      <div class="yes-no-row">
+        <button class="yn-btn" id="prayerYes" onclick="togglePrayer('yes')">✅ Yes</button>
+        <button class="yn-btn" id="prayerNo"  onclick="togglePrayer('no')">🚫 No, I'm good</button>
+      </div>
+
+      <div class="prayer-input-area" id="prayerInputArea">
+        <label>Share your request</label>
+        <textarea id="prayerText" placeholder="You can share as much or as little as you'd like…" rows="4"></textarea>
+      </div>
+
+      <!-- Running prayer list -->
+      <div id="prayerList" class="prayer-list"></div>
+    </div>
+  </section>
+
+  <!-- ── SUBMIT ── -->
+  <div class="submit-section">
+    <div class="submit-glow"></div>
+    <h3>Send Responses to the Group Leader</h3>
+    <p id="submitDesc">Responses will be texted to <strong id="submitLeaderName">Eric Morris</strong>.</p>
+    <button class="btn btn-large" onclick="submitAll()">📤 Submit &amp; Text Leader</button>
+  </div>
+
+  <!-- ── GROUP CONTACTS ── -->
+  <section id="contacts-section">
+    <div class="section-header">
+      <div class="section-icon" style="width:28px;height:28px;font-size:.8rem;">👥</div>
+      <div>
+        <div class="section-title" style="font-size:1rem;">Group Members</div>
+        <div class="section-desc" style="font-size:.78rem;">Circle Group #0001</div>
+      </div>
+    </div>
+
+    <div class="contacts-card">
+      <div class="simple-member-list">
+        <div class="simple-member-row">
+          <div class="contact-avatar">FB</div>
+          <div class="contact-info">
+            <div class="contact-name">Faron Barrett</div>
+            <div class="contact-number">(214) 587-3440</div>
+          </div>
+        </div>
+        <div class="simple-member-row">
+          <div class="contact-avatar">GB</div>
+          <div class="contact-info">
+            <div class="contact-name">George Braten</div>
+            <div class="contact-number">(972) 365-7399</div>
+          </div>
+        </div>
+        <div class="simple-member-row">
+          <div class="contact-avatar">SC</div>
+          <div class="contact-info">
+            <div class="contact-name">Stuart Chance</div>
+            <div class="contact-number">(972) 978-1712</div>
+          </div>
+        </div>
+        <div class="simple-member-row">
+          <div class="contact-avatar">J</div>
+          <div class="contact-info">
+            <div class="contact-name">Jarod</div>
+            <div class="contact-number">(214) 886-1424</div>
+          </div>
+        </div>
+        <div class="simple-member-row">
+          <div class="contact-avatar">LL</div>
+          <div class="contact-info">
+            <div class="contact-name">Lucas Larson</div>
+            <div class="contact-number">(817) 521-3009</div>
+          </div>
+        </div>
+        <div class="simple-member-row">
+          <div class="contact-avatar">BM</div>
+          <div class="contact-info">
+            <div class="contact-name">Bob Meyers</div>
+            <div class="contact-number">(469) 879-1544</div>
+          </div>
+        </div>
+        <div class="simple-member-row">
+          <div class="contact-avatar">EM</div>
+          <div class="contact-info">
+            <div class="contact-name">Eric Morris</div>
+            <div class="contact-number">(972) 998-4378</div>
+          </div>
+        </div>
+        <div class="simple-member-row">
+          <div class="contact-avatar">SS</div>
+          <div class="contact-info">
+            <div class="contact-name">Scott Sprawls</div>
+            <div class="contact-number">(602) 885-2440</div>
+          </div>
+        </div>
+        <div class="simple-member-row">
+          <div class="contact-avatar">TA</div>
+          <div class="contact-info">
+            <div class="contact-name">Tyler Anthony</div>
+            <div class="contact-number">(469) 688-1948</div>
+          </div>
+        </div>
+        <div class="simple-member-row">
+          <div class="contact-avatar">DW</div>
+          <div class="contact-info">
+            <div class="contact-name">David Whitson</div>
+            <div class="contact-number">(972) 672-6384</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" style="margin-top:48px;"><span>✦</span></div>
+
+  <!-- ── GROUP LEADER ── -->
+  <section id="leader-section">
+    <div class="section-header">
+      <div class="section-icon" style="width:28px;height:28px;font-size:.8rem;">⭐</div>
+      <div>
+        <div class="section-title" style="font-size:1rem;">This Week's Group Leader</div>
+        <div class="section-desc" style="font-size:.78rem;">Resets to Eric Morris every Monday morning</div>
+      </div>
+    </div>
+
+    <div class="leader-card">
+      <div class="leader-current">
+        <div class="leader-avatar" id="leaderAvatar">EM</div>
+        <div class="leader-info">
+          <div class="leader-label">Currently Leading</div>
+          <div class="leader-name" id="leaderName">Eric Morris</div>
+          <div class="leader-week" id="leaderWeek"></div>
+        </div>
+        <div class="leader-badge" id="leaderBadge">Default</div>
+      </div>
+
+      <div class="leader-change">
+        <div class="leader-change-label">Change leader for this week:</div>
+        <div class="leader-options">
+          <button class="leader-opt" id="opt-faron"  onclick="setLeader('Faron Barrett','FB')">
+            <div class="lo-avatar">FB</div>
+            <span>Faron Barrett</span>
+          </button>
+          <button class="leader-opt" id="opt-eric"   onclick="setLeader('Eric Morris','EM')">
+            <div class="lo-avatar">EM</div>
+            <span>Eric Morris</span>
+          </button>
+          <button class="leader-opt" id="opt-david"  onclick="setLeader('David Whitson','DW')">
+            <div class="lo-avatar">DW</div>
+            <span>David Whitson</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Responses saved — see you Friday!</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>Circle Group · <a href="https://valleycreek.org" target="_blank">Valley Creek Church</a> · Guides at <a href="https://valleycreek.plus/guides" target="_blank">valleycreek.plus</a></p>
+</footer>
+
+<script>
+// ── GUIDE DATA ──────────────────────────────────────────────────────────────
+const GUIDE = {
+  title: "Will You Let the Fire Do Its Work?",
+  url:   "https://valleycreek.plus/guides/Will-You-Let-the-Fire-Do-Its-Work"
+};
+
+// ── WEEK BADGE ──────────────────────────────────────────────────────────────
+const now = new Date();
+document.getElementById('weekBadge').textContent =
+  `Week of ${now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+
+// ── GUIDE SETUP ─────────────────────────────────────────────────────────────
+document.getElementById('guideTitle').textContent = GUIDE.title;
+document.getElementById('downloadBtn').href = GUIDE.url;
+
+// ── GROUP LEADER ─────────────────────────────────────────────────────────────
+const DEFAULT_LEADER = { name: 'Eric Morris', initials: 'EM' };
+
+function getWeekKey() {
+  // Returns a string like "2026-W10" — unique per calendar week
+  const d = new Date();
+  const jan1 = new Date(d.getFullYear(), 0, 1);
+  const week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+  return `${d.getFullYear()}-W${week}`;
+}
+
+function loadLeader() {
+  const stored = localStorage.getItem('circleLeader');
+  if (!stored) return DEFAULT_LEADER;
+  try {
+    const data = JSON.parse(stored);
+    // If stored week doesn't match current week, reset to default
+    if (data.week !== getWeekKey()) {
+      localStorage.removeItem('circleLeader');
+      return DEFAULT_LEADER;
+    }
+    return { name: data.name, initials: data.initials };
+  } catch(e) { return DEFAULT_LEADER; }
+}
+
+function saveLeader(name, initials) {
+  localStorage.setItem('circleLeader', JSON.stringify({
+    name, initials, week: getWeekKey()
+  }));
+}
+
+function renderLeader(leader) {
+  const isDefault = leader.name === DEFAULT_LEADER.name;
+  document.getElementById('leaderAvatar').textContent = leader.initials;
+  document.getElementById('leaderName').textContent   = leader.name;
+  document.getElementById('leaderWeek').textContent   =
+    `Week of ${now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+  const badge = document.getElementById('leaderBadge');
+  badge.textContent = isDefault ? 'Default' : 'This Week';
+  badge.className   = 'leader-badge' + (isDefault ? '' : ' overridden');
+
+  // Highlight active option button
+  document.querySelectorAll('.leader-opt').forEach(btn => btn.classList.remove('active'));
+  const map = { 'Faron Barrett':'opt-faron', 'Eric Morris':'opt-eric', 'David Whitson':'opt-david' };
+  const activeId = map[leader.name];
+  if (activeId) document.getElementById(activeId).classList.add('active');
+}
+
+function setLeader(name, initials) {
+  saveLeader(name, initials);
+  renderLeader({ name, initials });
+  document.getElementById('submitLeaderName').textContent = name;
+}
+
+// Init on page load
+renderLeader(loadLeader());
+
+let prayerChoice = null;
+function togglePrayer(val) {
+  prayerChoice = val;
+  document.getElementById('prayerYes').className = 'yn-btn' + (val==='yes' ? ' active-yes' : '');
+  document.getElementById('prayerNo').className  = 'yn-btn' + (val==='no'  ? ' active-no'  : '');
+  const area = document.getElementById('prayerInputArea');
+  area.className = 'prayer-input-area' + (val==='yes' ? ' visible' : '');
+}
+
+// ── ATTEND TOGGLE ────────────────────────────────────────────────────────────
+let attendChoice = null;
+function toggleAttend(val) {
+  attendChoice = val;
+  document.getElementById('attendYes').className = 'yn-btn' + (val==='yes' ? ' active-yes' : '');
+  document.getElementById('attendNo').className  = 'yn-btn' + (val==='no'  ? ' active-no'  : '');
+}
+
+// ── LEADER PHONE MAP ─────────────────────────────────────────────────────────
+const LEADER_PHONES = {
+  'Eric Morris':    '9729984378',
+  'Faron Barrett':  '2145873440',
+  'David Whitson':  '9726726384'
+};
+
+function updateSubmitDesc() {
+  const leader = loadLeader();
+  document.getElementById('submitLeaderName').textContent = leader.name;
+}
+updateSubmitDesc();
+
+// ── SUBMIT ───────────────────────────────────────────────────────────────────
+function submitAll() {
+  const leader     = loadLeader();
+  const leaderPhone = LEADER_PHONES[leader.name] || LEADER_PHONES['Eric Morris'];
+
+  // Build message
+  const memberName  = document.getElementById('attendName').value.trim() || 'A member';
+  const attending   = attendChoice === 'yes' ? 'Yes ✅' : attendChoice === 'no' ? 'No 🙏' : 'No response';
+  const hasPrayer   = prayerChoice === 'yes';
+  const prayerName  = document.getElementById('prayerName').value.trim() || 'Anonymous';
+  const prayerText  = document.getElementById('prayerText').value.trim();
+  const weekLabel   = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  let msg = `Circle Group #0001 — Week of ${weekLabel}\n`;
+  msg += `From: ${memberName}\n`;
+  msg += `Attending Friday 6:30am: ${attending}\n`;
+  if (hasPrayer && prayerText) {
+    msg += `Prayer request (${prayerName}): ${prayerText}`;
+  } else {
+    msg += `Prayer request: None`;
+  }
+
+  // Open SMS to current leader
+  window.location.href = `sms:${leaderPhone}?body=${encodeURIComponent(msg)}`;
+
+  // Toast
+  const toast = document.getElementById('toast');
+  toast.textContent = `✓ Opening text to ${leader.name}…`;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
